@@ -22,7 +22,7 @@ def old_method(encodings, names, face_image):
     	# encodings
         matches = face_recognition.compare_faces(encodings, face)
         confidence = face_recognition.face_distance(encodings, face)
-        name = "Unknown"
+        name = "unknown"
         
         # check to see if we have found a match
         if True in matches:
@@ -49,8 +49,7 @@ def old_method(encodings, names, face_image):
         
         # update the list of names
     	## names.append(name)
-        print name
-        print 1-min(confid_value[name])
+        return (name, 1-min(confid_value[name]))
 
 def encode_image(image_file):
     # load the input image and convert it from BGR to RGB
@@ -96,10 +95,12 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("-e", "--encodings", required=True,
             help="path to serialized db of facial encodings")
-#    ap.add_argument("-i", "--image", required=True,
-#            help="path to input image")
+    ap.add_argument("-i", "--image", required=True,
+            help="path to input image")
     ap.add_argument("-m", "--learning-model", type=int, default=0,
             help="Use which model for learning: 0=none, 1=decision tree, 2=neural network, 3=boost, 4=svm, 5=knn")
+    ap.add_argument("-n", "--number-neighbors", type=int, default=8,
+            help="neighbor number for knn model (default: 8)")
     params = vars(ap.parse_args())
 
     #load encodings
@@ -108,15 +109,19 @@ if __name__ == "__main__":
     #trained + inference + test    
     model_type = params["learning_model"]
 
+    input_enc, input_loc = encode_image(params["image"])
+
     if model_type == 5:
-        print("[INFO] Apply knn model with k = XX")
+        print("[INFO] Apply knn model with k = "+str(params["number_neighbors"]))
         # train(encodings, names, model_save_path=None, n_neighbors=None, knn_algo='ball_tree'):
-        knn.train(faces["encodings"], faces["names"], model_save_path="./knn_out.pickle", n_neighbors=3)
+        knn_clfier = knn.train(faces["encodings"], faces["names"], n_neighbors=params["number_neighbors"])
+        # predict(encoding, knn_clf=None, model_path=None, distance_threshold=0.6)
+        pred = knn.predict(input_enc, knn_clf=knn_clfier)
     else:
         print("[INFO] Apply to old method (the nearest neigher)...")
-        input_enc, input_loc = encode_image(params["image"])
-        old_method(faces["encodings"], faces["names"], input_enc)
+        pred = old_method(faces["encodings"], faces["names"], input_enc)
 
+    print pred
     #encoding the input file
     #show result
     #show picture
