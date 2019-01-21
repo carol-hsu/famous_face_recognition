@@ -2,3 +2,4 @@ venv
 *_examples
 *_dataset*
 *.pickle
+*.pyc
