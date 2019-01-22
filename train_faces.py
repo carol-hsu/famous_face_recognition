@@ -6,7 +6,7 @@ import face_recognition
 import argparse
 import pickle
 import cv2
-from famous_face_recognition import knn
+from famous_face_recognition import knn, decision_tree
 
 DETECTION_METHOD="cnn"
 
@@ -111,11 +111,20 @@ if __name__ == "__main__":
 
     input_enc, input_loc = encode_image(params["image"])
 
-    if model_type == 5:
+    pred = ("unknown", -1)
+
+    if model_type == 1 or model_type == 3:
+        print("[INFO] Apply decision tree method...")
+        tree = decision_tree.train(faces["encodings"], faces["names"])
+        decision_tree.predict(input_enc, tree)
+        ## decision_tree.main((faces["encodings"], faces["names"])
+    elif model_type == 2:
+        print("[INFO] Apply neural network...")
+    elif model_type == 4:
+        print("[INFO] Apply SVM...")
+    elif model_type == 5:
         print("[INFO] Apply knn model with k = "+str(params["number_neighbors"]))
-        # train(encodings, names, model_save_path=None, n_neighbors=None, knn_algo='ball_tree'):
         knn_clfier = knn.train(faces["encodings"], faces["names"], n_neighbors=params["number_neighbors"])
-        # predict(encoding, knn_clf=None, model_path=None, distance_threshold=0.6)
         pred = knn.predict(input_enc, knn_clf=knn_clfier)
     else:
         print("[INFO] Apply to old method (the nearest neigher)...")
