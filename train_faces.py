@@ -6,7 +6,7 @@ import face_recognition
 import argparse
 import pickle
 import cv2
-from famous_face_recognition import knn, decision_tree
+from famous_face_recognition import knn, decision_tree, svm
 
 DETECTION_METHOD="cnn"
 
@@ -89,51 +89,56 @@ def load_encodings(encoding_file):
 
     return data
 
-
 if __name__ == "__main__":
     # construct the argument parser and parse the arguments
     ap = argparse.ArgumentParser()
-    ap.add_argument("-e", "--encodings", required=True,
+    ap.add_argument("-e", "--encodings", required=False,
             help="path to serialized db of facial encodings")
+    ap.add_argument("-v", "--validate-encodings", required=False,
+            help="path to serialized db of facial encodings, for validation")
     ap.add_argument("-i", "--image", required=True,
             help="path to input image")
     ap.add_argument("-m", "--learning-model", type=int, default=0,
-            help="Use which model for learning: 0=none, 1=decision tree, 2=neural network, 3=boost, 4=svm, 5=knn")
+            help="Use which model for learning: 0=none, 1=decision tree, 2=boost 3=knn, 4=svm, 5=neural network")
     ap.add_argument("-n", "--number-neighbors", type=int, default=8,
             help="neighbor number for knn model (default: 8)")
     params = vars(ap.parse_args())
-
-    #load encodings
-    faces = load_encodings(params["encodings"])
     
+    pred = ("unknown", -1)
+
     #trained + inference + test    
     model_type = params["learning_model"]
 
-    input_enc, input_loc = encode_image(params["image"])
+    
+    if model_type < 4:
+        #load encodings
+        faces = load_encodings(params["encodings"])
+        input_enc, input_loc = encode_image(params["image"])
 
-    pred = ("unknown", -1)
+        if model_type == 3: ### knn
+            print("[INFO] Apply knn model with k = "+str(params["number_neighbors"]))
+            knn_clfier = knn.train(faces["encodings"], faces["names"], n_neighbors=params["number_neighbors"])
+            pred = knn.predict(input_enc, knn_clf=knn_clfier)
+        else: 
+            print("[INFO] Apply decision tree method...")
+            tree = decision_tree.train(faces["encodings"], faces["names"])
+            if model_type == 2: ### boost
+                #Grab data from validation encodings
+                vfaces = load_encodings(params["validate_encodings"])
+                #Do Pruning
+                decision_tree.boost(vfaces["encodings"], vfaces["names"], tree) 
 
-    if model_type == 1 or model_type == 3:
-        print("[INFO] Apply decision tree method...")
-        tree = decision_tree.train(faces["encodings"], faces["names"])
-        decision_tree.predict(input_enc, tree)
-        ## decision_tree.main((faces["encodings"], faces["names"])
-    elif model_type == 2:
-        print("[INFO] Apply neural network...")
-    elif model_type == 4:
+            decision_tree.predict(input_enc, tree)
+    else: 
+        #read images from scratchs
         print("[INFO] Apply SVM...")
-    elif model_type == 5:
-        print("[INFO] Apply knn model with k = "+str(params["number_neighbors"]))
-        knn_clfier = knn.train(faces["encodings"], faces["names"], n_neighbors=params["number_neighbors"])
-        pred = knn.predict(input_enc, knn_clf=knn_clfier)
-    else:
-        print("[INFO] Apply to old method (the nearest neigher)...")
-        pred = old_method(faces["encodings"], faces["names"], input_enc)
+        images, labels = svm.prepare_dataset(params["encodings"])
+        #print("[INFO] Apply neural network...")
+    
+    #print("[INFO] Apply to old method (the nearest neigher)...")
+    #pred = old_method(faces["encodings"], faces["names"], input_enc)
 
     print pred
-    #encoding the input file
-    #show result
-    #show picture
 
 '''
 ######## show box and picutre

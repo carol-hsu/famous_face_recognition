@@ -11,6 +11,7 @@ from collections import Counter
 
 #this is a boolean DT
 THE_ONE = "natalie_portman"
+THE_OTHER = "keira_knightley"
 CLASS_NAME = "name"
 ##################################################
 # data class to hold csv data
@@ -358,7 +359,7 @@ def validate_tree(node, dataset):
 def validate_example(node, example):
     if (node.is_leaf == True):
         projected = node.classification
-        actual = int(example[-1])
+        actual = 1 if example[-1] == THE_ONE else 0
         if (projected == actual): 
             return 1
         else:
@@ -392,7 +393,7 @@ def print_tree(node):
         return
     for x in range(node.height):
             print "\t",
-    print "Split index: " + str(node.attr_split) + " " + str(node.attr_split_index)
+    print "Split index: " + str(node.attr_split)
     for x in range(node.height):
             print "\t",
     print "Split value: " + str(node.attr_split_value)
@@ -445,7 +446,21 @@ def predict(encoding, tree):
     print test_example(testcase, tree, 128)
     #testset = read_face([encoding], ["unknown"])
 
-def prune(encodings, names, tree):
+######
+# call prune after training out a tree
+#####
+def boost(encodings, names, tree):
+    validateset = read_face(encodings, names)
+    best_score = validate_tree(tree, validateset)
+    
+    all_ex_score = copy.deepcopy(best_score)
+    print "Initial (pre-pruning) validation set score: " + str(100*best_score) +"%"
+# Pruning: somehow right now the tree is too short
+
+    post_prune_accuracy = 100*prune_tree(tree, tree, validateset, best_score)
+    print "Post-pruning score on validation set: " + str(post_prune_accuracy) + "%"
+
+    print_tree(tree)
 
 '''
 #old implementations 
