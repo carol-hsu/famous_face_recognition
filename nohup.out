@@ -1,0 +1,49 @@
+/home/nosus/workstation/ml_proj_1/venv/local/lib/python2.7/site-packages/sklearn/model_selection/_split.py:2053: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
+  warnings.warn(CV_WARNING, FutureWarning)
+/home/nosus/workstation/ml_proj_1/venv/local/lib/python2.7/site-packages/sklearn/model_selection/_split.py:2053: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
+  warnings.warn(CV_WARNING, FutureWarning)
+[INFO] Apply SVM...
+Traceback (most recent call last):
+  File "train_faces.py", line 141, in <module>
+    pca, clf = svm.train(images, labels, svm_kernal=params["kernel"])
+  File "/home/nosus/workstation/ml_proj_1/famous_face_recognition/svm.py", line 64, in train
+    classifier.fit(transformed, training_label) 
+  File "/home/nosus/workstation/ml_proj_1/venv/local/lib/python2.7/site-packages/sklearn/model_selection/_search.py", line 722, in fit
+    self._run_search(evaluate_candidates)
+  File "/home/nosus/workstation/ml_proj_1/venv/local/lib/python2.7/site-packages/sklearn/model_selection/_search.py", line 1191, in _run_search
+    evaluate_candidates(ParameterGrid(self.param_grid))
+  File "/home/nosus/workstation/ml_proj_1/venv/local/lib/python2.7/site-packages/sklearn/model_selection/_search.py", line 711, in evaluate_candidates
+    cv.split(X, y, groups)))
+  File "/home/nosus/workstation/ml_proj_1/venv/local/lib/python2.7/site-packages/sklearn/externals/joblib/parallel.py", line 920, in __call__
+    while self.dispatch_one_batch(iterator):
+  File "/home/nosus/workstation/ml_proj_1/venv/local/lib/python2.7/site-packages/sklearn/externals/joblib/parallel.py", line 759, in dispatch_one_batch
+    self._dispatch(tasks)
+  File "/home/nosus/workstation/ml_proj_1/venv/local/lib/python2.7/site-packages/sklearn/externals/joblib/parallel.py", line 716, in _dispatch
+    job = self._backend.apply_async(batch, callback=cb)
+  File "/home/nosus/workstation/ml_proj_1/venv/local/lib/python2.7/site-packages/sklearn/externals/joblib/_parallel_backends.py", line 182, in apply_async
+    result = ImmediateResult(func)
+  File "/home/nosus/workstation/ml_proj_1/venv/local/lib/python2.7/site-packages/sklearn/externals/joblib/_parallel_backends.py", line 549, in __init__
+    self.results = batch()
+  File "/home/nosus/workstation/ml_proj_1/venv/local/lib/python2.7/site-packages/sklearn/externals/joblib/parallel.py", line 225, in __call__
+    for func, args, kwargs in self.items]
+  File "/home/nosus/workstation/ml_proj_1/venv/local/lib/python2.7/site-packages/sklearn/model_selection/_validation.py", line 528, in _fit_and_score
+    estimator.fit(X_train, y_train, **fit_params)
+  File "/home/nosus/workstation/ml_proj_1/venv/local/lib/python2.7/site-packages/sklearn/svm/base.py", line 212, in fit
+    fit(X, y, sample_weight, solver_type, kernel, random_seed=seed)
+  File "/home/nosus/workstation/ml_proj_1/venv/local/lib/python2.7/site-packages/sklearn/svm/base.py", line 271, in _dense_fit
+    max_iter=self.max_iter, random_seed=random_seed)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "train_faces.py", line 5, in <module>
+    import face_recognition
+ImportError: No module named face_recognition
+[INFO] Apply SVM...
+Traceback (most recent call last):
+  File "train_faces.py", line 140, in <module>
+    images, labels = svm.prepare_dataset(params["encodings"])
+  File "/home/nosus/workstation/ml_proj_1/famous_face_recognition/svm.py", line 32, in prepare_dataset
+    faces = faceCascade.detectMultiScale(image) 
+KeyboardInterrupt
+usage: train_faces.py [-h] [-e ENCODINGS] [-v VALIDATE_ENCODINGS] -i IMAGE
+                      [-m LEARNING_MODEL] [-n NUMBER_NEIGHBORS] [-k KERNEL]
+train_faces.py: error: unrecognized arguments: yoyo
