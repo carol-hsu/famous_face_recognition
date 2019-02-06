@@ -161,17 +161,3 @@ if __name__ == "__main__":
     #pred = old_method(faces["encodings"], faces["names"], input_enc)
 
 
-'''
-######## show box and picutre
-# loop over the recognized faces
-for ((top, right, bottom, left), name) in zip(boxes, names):
-	# draw the predicted face name on the image
-	cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 2)
-	y = top - 15 if top - 15 > 15 else top + 15
-	cv2.putText(image, name, (left, y), cv2.FONT_HERSHEY_SIMPLEX,
-		0.75, (0, 255, 0), 2)
-
-# show the output image
-cv2.imshow("Image", image)
-cv2.waitKey(0)
-'''
