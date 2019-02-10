@@ -15,11 +15,21 @@ This is for self study/practice/school assignment :octocat: no profit for purpos
 
 Following instructions show you how to play with this repo:
 
+## Environment setup
+Make sure you have Python on your machine.
+After you pull this repo, following commands helps you installing the required packages.
+
+```
+// Virtualenv is recommended, but optional
+$ virtualenv venv
+
+(venv) $ pip install -r requirements.txt
+```
 ## Encoding images
 Part of learning algorithms rely on encoding datas, instead of raw images. Let's encode the images first!
 Before encoding, put your face images in nested directories: a secondary layer of directories which separate your images by **names**.
 for example:
-```
+```bash
 $ tree pk_dataset_test
 pk_dataset_test/
 ├── keira_knightley
@@ -30,6 +40,15 @@ pk_dataset_test/
     └── 002.jpg
 ```
 no matter how many layers in upper directory, be aware to separate the files 
+
+Next, encoding your images with flag `-i` for path of image directory, and `-e` the name of out encodings
+```
+$ python encode_faces.py -i $ROOT_DIRECTORY_OF_IMAGES -e "OUTPUT_NAME"
+```
+i.e. 
+```
+$ python encode_faces.py -i ./pk_dataset_test -e pk_test.pickle
+```
 
 
 ## Run algorithms
