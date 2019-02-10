@@ -50,7 +50,7 @@ def train(directory, model):
     database = {}
     image_paths = list(paths.list_images(directory))
     for image_path in image_paths:
-        label = image_path.split('/')[1]
+        label = image_path.split('/')[-2]
         enc = img_to_encoding(image_path, model, MARGIN)
         if enc is not None:
             if label in database:
@@ -62,10 +62,9 @@ def train(directory, model):
 
 
 def predict(directory, database, model):
-
+    predicts = []
     image_paths = list(paths.list_images(directory))
     for image_path in image_paths:
-        print "checking "+image_path
         ## Step 1: Compute the target "encoding" for the image. Use img_to_encoding() see example above.
         encoding = img_to_encoding(image_path, model, MARGIN)
     
@@ -87,9 +86,11 @@ def predict(directory, database, model):
     
         if min_dist > 0.7:
             print("Not in the database.")
+            predicts.append("unknown")
         else:
-            print ("it's " + str(identity) + ", the distance is " + str(min_dist))
+            predicts.append(str(identity)) # str(min_dist))
         
-#    return min_dist, identity
+    return predicts
+    
 
 

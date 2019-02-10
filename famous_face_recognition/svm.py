@@ -12,8 +12,8 @@ from imutils import paths
 
 IMAGE_ROW=140
 IMAGE_COL=140
-THE_ONE = "natalie_portman"
-THE_OTHER = "keira_knightley"
+#THE_ONE = "natalie_portman"
+#THE_OTHER = "keira_knightley"
 
 
 def prepare_dataset(directory):
@@ -27,7 +27,7 @@ def prepare_dataset(directory):
     for image_path in image_paths:
         image_pil = Image.open(image_path).convert('L')
         image = np.array(image_pil, 'uint8')
-        nbr = 1 if image_path.split('/')[1] == THE_ONE else 0
+        nbr = image_path.split('/')[-2]
         #grab faces
         faces = faceCascade.detectMultiScale(image) 
         for (x, y, w, h) in faces:
@@ -65,19 +65,20 @@ def train(faces, labels, svm_kernal="rbf"):
 
     return pca, classifier
 
-def predict(face, pca, clf):
+def predict(faces, pca, clf):
     # prediction
 #        pred_image_pil = Image.open(image_path).convert('L')
 #        pred_image = np.array(pred_image_pil, 'uint8')
 #        faces = faceCascade.detectMultiScale(pred_image)
-    temp = np.array(face).flatten()
-    if len(temp) == IMAGE_ROW*IMAGE_COL:
-        X_test = pca.transform([np.array(face).flatten()])
-        mynbr = clf.predict(X_test)
-        #nbr_act = int(os.path.split(image_path)[1].split('.')[0].replace("subject",""))
-        predict_name = THE_ONE if mynbr[0] else THE_OTHER
-        print "Predicted By Classifier : " + predict_name 
-    
-        return mynbr[0]
+    predicts = []
+    for face in faces:
+        temp = np.array(face).flatten()
+        if len(temp) == IMAGE_ROW*IMAGE_COL:
+            X_test = pca.transform([np.array(face).flatten()])
+            mynbr = clf.predict(X_test)
+            predicts.append(mynbr[0])
+        else:
+            predicts.append("unknown")
 
-    return -1
+    return predicts
+
