@@ -174,5 +174,17 @@ Using TensorFlow backend.
 
 ### Neural network
 
+Use raw data directory as input.
+
+```
+$ python face_recongnition.py -m 5 -t $DIRECTORY_TRAINING_IMAGES -i $DIRECTORY_TESTING_IMAGES
+
+//i.e. 
+python face_recongnition.py -m 5 -t dataset/pk_dataset -i dataset/pk_dataset_test/
+Using TensorFlow backend.
+[INFO] Apply neural network...
+2019-02-10 20:25:13.756006: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+50.0
+```
 
 

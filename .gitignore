@@ -1,6 +1,4 @@
 venv
-*_dataset*
-*.pickle
 *.pyc
 *.DS_Store
 nohup.out

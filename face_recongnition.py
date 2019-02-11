@@ -95,20 +95,20 @@ def accuracy(predicts, answers):
 if __name__ == "__main__":
     # construct the argument parser and parse the arguments
     ap = argparse.ArgumentParser()
-    ap.add_argument("-t", "--train", required=False,
+    ap.add_argument("-t", "--train", required=True,
             help="directory of training set/encodings of training set")
-    ap.add_argument("-i", "--test", required=False,
+    ap.add_argument("-i", "--test", required=True,
             help="directory of testing set/encodings of testing set")
     ap.add_argument("-v", "--validate", required=False,
             help="directory of validating set/encoding of validating set")
     ap.add_argument("-m", "--learning-model", type=int, default=5,
-            help="Use which model for learning: 1=knn, 2=decision tree, 3=boosting, 4=svm, 5=neural network")
+            help="Use which model for learning: 1=knn, 2=decision tree, 3=boosting, 4=svm, 5=neural network (default: 5)")
     ap.add_argument("-n", "--number-neighbors", type=int, default=8,
             help="neighbor number for knn model (default: 8)")
     ap.add_argument("-k", "--kernel", type=str, default="rbf",
             help="kernel for svm model, linear/poly/rbf/sigmoid/precomputed (default: rbf)")
     ap.add_argument("-b", "--boosting-estimators", type=int, default=10,
-            help="the number of estimators for boosting")
+            help="the number of estimators for boosting (default: 10)")
     params = vars(ap.parse_args())
     
     #trained + inference + test    
@@ -136,7 +136,7 @@ if __name__ == "__main__":
             print pruned_tree.score([enc.tolist() for enc in test_faces["encodings"]], test_faces["names"])*100
 
         else: ### boosting
-            print("[INFO] Apply boosting method...")
+            print("[INFO] Apply boosting method with "+ str(params["boosting_estimators"]) +" estimators ...")
             boosted_tree = decision_tree.boosting(faces["encodings"], faces["names"], \
                                                   estimators=params["boosting_estimators"])
             print boosted_tree.score([enc.tolist() for enc in test_faces["encodings"]], test_faces["names"])*100
@@ -144,7 +144,7 @@ if __name__ == "__main__":
 
     elif model_type == 4: 
         #read images from scratchs
-        print("[INFO] Apply SVM...")
+        print("[INFO] Apply SVM with kernal " + params["kernel"] + "...")
         images, labels = svm.prepare_dataset(params["train"])
         pca, clf = svm.train(images, labels, svm_kernal=params["kernel"])
         test_images, test_labels = svm.prepare_dataset(params["test"])

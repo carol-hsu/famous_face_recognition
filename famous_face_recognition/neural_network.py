@@ -40,7 +40,6 @@ def build_model():
     K.set_image_data_format('channels_first')
     #np.set_printoptions(threshold=np.nan)
     FRmodel = faceRecoModel(input_shape=(3, MARGIN, MARGIN))
-    print("Total Params:", FRmodel.count_params())
 
     FRmodel.compile(optimizer = 'adam', loss = triplet_loss, metrics = ['accuracy'])
     load_weights_from_FaceNet(FRmodel)
