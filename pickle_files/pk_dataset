@@ -1,6 +1,0 @@
-0~100
-101~200
-201~
-
-< 100: the small dataset, each one has 8X images, the training set
-100~130/140: the tiny dataset, each one has 2X images, for validation
