@@ -78,7 +78,7 @@ optional arguments:
                         kernel for svm model,
                         linear/poly/rbf/sigmoid/precomputed (default: rbf)
   -b BOOSTING_ESTIMATORS, --boosting-estimators BOOSTING_ESTIMATORS
-                        the number of estimators for boosting
+                        the number of estimators for boosting (default: 10)
 ```
 These flags are not all required, please use them respectively based on the algorithm you want to try.
 The most important part is to assign algorithm the training set and testing set, by flags `-t` and `-i`. Some algorithms only accept encoding files, while the others accept raw data(inform with the directory).
@@ -111,12 +111,67 @@ Using TensorFlow backend.
 [INFO] Apply knn model with k = 2
 100.0
 
-//
-
 ```
 ### Decision tree
+
+Use encoding files as input. Pruning method is applied by default.
+```
+$ python face_recongnition.py -m 2 -t $TRAIN_ENCODINGS -i $TEST_ENCODINGS 
+
+// i.e. 
+$ python face_recongnition.py -m 2 -t pickle_files/pk_large.pickle -i pickle_files/pk_test.pickle 
+Using TensorFlow backend.
+[INFO] loading encodings...
+[INFO] Finish loading! Get 300 faces
+[INFO] loading encodings...
+[INFO] Finish loading! Get 12 faces
+[INFO] Apply decision tree method...
+The binary tree structure has 15 nodes and has the following tree structure:
+node=0 test node: go to node 1 if X[:, 68] <= 0.2058438465861415 else to node 6.
+(ignored showing tree structure)
+pruning node: 3
+(ignored)
+100.0
+```
 ### Boosting 
+
+Use encoding files as input. Optionally, you may set flag `-b` for the number of estimators used in boosting.
+```
+$ python face_recongnition.py -m 3 -t $TRAIN_ENCODINGS -i $TEST_ENCODINGS [-b number_of_estimators]
+
+// i.e.
+$ python face_recongnition.py -m 3 -t pickle_files/pk_large.pickle -i pickle_files/pk_test.pickle -b 40
+Using TensorFlow backend.
+[INFO] loading encodings...
+[INFO] Finish loading! Get 300 faces
+[INFO] loading encodings...
+[INFO] Finish loading! Get 12 faces
+[INFO] Apply boosting method with 40 estimators ...
+100.0
+```
+
 ### SVM
+
+Use raw data directory as input. You can pick different kernal by flag `-k`. 
+
+```
+$ python face_recongnition.py -m 4 -t $DIRECTORY_TRAINING_IMAGES -i $DIRECTORY_TESTING_IMAGES [-k kernal_name]
+
+// i.e. 
+$ python face_recongnition.py -m 4 -t dataset/pk_dataset -i dataset/pk_dataset_test/
+Using TensorFlow backend.
+[INFO] Apply SVM with kernal rbf...
+(ignored warning message)
+29.0322580645
+
+// use another kernal
+$ python face_recongnition.py -m 4 -t dataset/pk_dataset -i dataset/pk_dataset_test -k sigmoid
+Using TensorFlow backend.
+[INFO] Apply SVM with kernal sigmoid...
+(ignored)
+45.1612903226
+```
+
 ### Neural network
 
 
